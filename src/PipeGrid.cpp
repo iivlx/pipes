@@ -11,7 +11,7 @@ PipeGrid::PipeGrid(int width, int height) {
   this->source = Point{ 0, 0 };
   for (int y = 0; y < height; y++) {
     for (int x = 0; x < width; x++) {
-  	  this->cells.push_back(PipeCell());
+      this->cells.push_back(PipeCell());
     }
   }
 }
@@ -53,6 +53,28 @@ Point PipeGrid::getCellCoordinates(PipeCell* c) {
   return Point{ index % this->width, index / this->width };
 }
 
+bool PipeGrid::hasEmptyCell() {
+  for (int x = 0; x < this->width; x++)
+    for (int y = 0; y < this->height; y++)
+      if (getCell(x, y)->type == PIPE_EMPTY) return true;
+  return false;
+}
+
+PipeCell* PipeGrid::getRandomCell() {
+  int cCells = this->width * this->height;
+  int idxRandomCell = randint(0, cCells - 1)();
+  return &this->cells[idxRandomCell];
+}
+
+PipeCell* PipeGrid::getRandomEmptyCell() {
+  if (hasEmptyCell() == false) return nullptr;
+  PipeCell* c;
+  do {
+    c = getRandomCell();
+  } while (c->type != PIPE_EMPTY);
+  return c;
+}
+
 // Check if there are any empty cells in the grid that are blocked on 3 sides.
 bool PipeGrid::hasCellWithOneOpenDirectionToSource() {
   PipeCell* c = getCellWithOneOpenDirectionToSource();
@@ -78,6 +100,9 @@ bool PipeGrid::createPathToSource(int x, int y) {
   return false;
 }
 
+bool PipeGrid::createPathToSource(PipeCell* c) {
+  return false;
+}
 
 Connections PipeGrid::getOpenDirectionsToSource(int x, int y) {
   Connections c = { 0, 0, 0, 0 };

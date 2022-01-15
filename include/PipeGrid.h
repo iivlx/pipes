@@ -15,18 +15,21 @@ class PipeGrid {
   PipeCell* getCell(int x, int y, int d);
   PipeCell* getCell(PipeCell*, int d);
   int getCellType(int x, int y, int d);
+  Point getCellCoordinates(PipeCell* c);
   bool isValidCoordinate(int x, int y);
 
-  bool hasCellWithOneOpenDirectionToSource();
-  PipeCell* getCellWithOneOpenDirectionToSource();
   bool hasEmptyCell();
   PipeCell* getRandomEmptyCell();
   PipeCell* getRandomCell();
-  Point getCellCoordinates(PipeCell* c);
+
+  bool hasCellWithOneOpenDirectionToSource();
+  PipeCell* getCellWithOneOpenDirectionToSource();
+  Connections getOpenDirectionsToSource(int x, int y);
+  bool createPathToSource(int x, int y);
+  bool createPathToSource(PipeCell* c);
 
  private:
   std::vector<PipeCell> cells;
   static int checkTime;
-  Connections getOpenDirectionsToSource(int x, int y);
 };
 
