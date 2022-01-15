@@ -27,6 +27,8 @@ public:
   PipeCell();
 
   int countConnections();
+  void addConnection(int d);
+  void addConnectionFrom(int d);
 
   void makeEndpoint(int t);
   void makeConnector(int t);

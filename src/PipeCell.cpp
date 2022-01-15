@@ -1,4 +1,5 @@
 #include "PipeCell.h"
+#include "directions.h"
 
 PipeCell::PipeCell() {
   this->checked = 0;
@@ -19,6 +20,21 @@ void PipeCell::rotate() {
 int PipeCell::countConnections() {
   Connections c = this->connections;
   return c.up + c.right + c.down + c.left;
+}
+
+void PipeCell::addConnection(int d) {
+  if (d == UP) this->connections.up = 1;
+  if (d == RIGHT) this->connections.right = 1;
+  if (d == DOWN) this->connections.down = 1;
+  if (d == LEFT) this->connections.left = 1;
+}
+
+// Add a new connection to the cell from the direction. The connection will be on the opposite side.
+void PipeCell::addConnectionFrom(int d) {
+  if (d == UP) this->connections.down = 1;
+  if (d == RIGHT) this->connections.left = 1;
+  if (d == DOWN) this->connections.up = 1;
+  if (d == LEFT) this->connections.right = 1;
 }
 
 void PipeCell::makeType(int type, int t) {
