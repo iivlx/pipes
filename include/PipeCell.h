@@ -26,9 +26,21 @@ public:
 
   PipeCell();
 
+  int countConnections();
 
+  void makeEndpoint(int t);
+  void makeConnector(int t);
+  void makeSource(int t);
+
+  bool isElbow();
+  bool isT();
+  bool isEnd();
+  bool isStraight();
 
   void rotate();
 
  private:
+  bool hasAdjacentConnections();
+  bool hasOppositeConnections();
+  void makeType(int type, int t);
 };
