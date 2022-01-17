@@ -42,6 +42,22 @@ PipeCell* PipeGrid::getCell(PipeCell* c, int d) {
   return getCell(p.x, p.y, d);
 }
 
+PipeCell* PipeGrid::getCellTopLeft() {
+  return getCell(0, 0);
+}
+
+PipeCell* PipeGrid::getCellTopRight() {
+  return getCell(this->width-1, 0);
+}
+
+PipeCell* PipeGrid::getCellBottomLeft() {
+  return getCell(0, this->height-1);
+}
+
+PipeCell* PipeGrid::getCellBottomRight() {
+  return getCell(this->width - 1, this->height-1);
+}
+
 int PipeGrid::getCellType(int x, int y, int d) {
   PipeCell* c = getCell(x, y, d);
   if (c == nullptr) return -1;

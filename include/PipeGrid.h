@@ -14,6 +14,10 @@ class PipeGrid {
   PipeCell* getCell(int x, int y);
   PipeCell* getCell(int x, int y, int d);
   PipeCell* getCell(PipeCell*, int d);
+  PipeCell* getCellTopLeft();
+  PipeCell* getCellTopRight();
+  PipeCell* getCellBottomLeft();
+  PipeCell* getCellBottomRight();
   int getCellType(int x, int y, int d);
   Point getCellCoordinates(PipeCell* c);
   bool isValidCoordinate(int x, int y);
