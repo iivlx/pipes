@@ -151,15 +151,14 @@ void gui(PipeGrid* g) {
   int cursorX = 0;
   int cursorY = 0;
 
-	int c = 0;
-	do {
-		if (c == ':')
+  int c = 0;
+  do {
+    if (c == ':')
       handleCommand();
     else
-		  handleKeyPress(c);
-
+      handleKeyPress(c);
     display(g, cursorX, cursorY);
 
-		c = getch();
-	} while (c != 'q');
+    c = getch();
+  } while (c != 'q');
 }
