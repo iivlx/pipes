@@ -33,10 +33,11 @@ public:
   bool isT();
   bool isEnd();
   bool isStraight();
+  bool isConnectorOrSource();
 
   void rotate();
 
- private:
+ protected:
   bool hasAdjacentConnections();
   bool hasOppositeConnections();
   void makeType(int type, int t);

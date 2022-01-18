@@ -87,3 +87,8 @@ bool PipeCell::isEnd() {
   if (this->countConnections() == 1) return true;
   return false;
 }
+
+bool PipeCell::isConnectorOrSource() {
+  if (this->type == PIPE_CONNECTOR || this->type == PIPE_SOURCE) return true;
+  return false;
+}
