@@ -109,7 +109,7 @@ bool PipeGrid::hasCellWithOneOpenDirectionToSource() {
 // Get an empty cell in the grid that is blocked on 3 sides.
 PipeCell* PipeGrid::getCellWithOneOpenDirectionToSource() {
   for (PipeCell& c : this->cells)
-    if (c.type == PIPE_EMPTY && countConnections(getOpenDirectionsToSource(&c)))
+    if (c.type == PIPE_EMPTY && countConnections(getOpenDirectionsToSource(&c)) <= 1)
       return &c;
   return nullptr;
 }
