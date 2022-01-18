@@ -1,15 +1,18 @@
-#include <iostream>
+﻿#include "curses.h" 
 
 #include "PipeGrid.h"
 #include "PipeCell.h"
 #include "directions.h"
+#include "gui_curses.h"
 
 PipeGrid createPipes(int width, int height);
 
 void createSource(int width, int height, PipeGrid& grid);
 
 int main(int argc, char** argv) {
-  PipeGrid grid = PipeGrid(12, 12);
+  PipeGrid grid = createPipes(10, 10);
+  gui(&grid);
+
 }
 
 PipeGrid createPipes(int width, int height) {
@@ -18,12 +21,9 @@ PipeGrid createPipes(int width, int height) {
 
   while (grid.hasEmptyCell()) {
     grid.time += 1;
-    // First select either a random empty cell or one we want to start from right away.
-    // Like a cell with only 1 directions it can access the source from.
-    PipeCell* c = grid.getCellWithOneOpenDirectionToSource();
-    if (c == nullptr) {
+    PipeCell* c = grid.getCellWithOneOpenDirectionToSource(); // Create these cells first.
+    if (c == nullptr)
       c = grid.getRandomEmptyCell();
-    }
     c->makeEndpoint(grid.time);
     grid.createPathToSource(c);
   }
