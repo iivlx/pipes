@@ -118,7 +118,6 @@ PipeCell* PipeGrid::getCellWithOneOpenDirectionToSource() {
   return nullptr;
 }
 
-
 void PipeGrid::setCellsCheckedFalse() {
   for (PipeCell& c : this->cells)
     c.checked = false;
@@ -166,55 +165,26 @@ int PipeGrid::isConnectedToSource(PipeCell* c) {
   return isConnectedToSource(c, -1);
 }
 
-int PipeGrid::isConnectedToSource(PipeCell* c, int d, bool check) {
+int PipeGrid::isConnectedToSource(PipeCell* c, int d, bool alreadyChecked) {
   if (c == nullptr) return false;
-  if (c->checked) return check;
+  if (c->checked) return alreadyChecked;
   c->checked = true;
   // Recursively check each connection until they all reuslt in a dead end, or we reach the source.
-  if (c->type == PIPE_SOURCE && check == false) return true;
-  if (isConnectedToSourceUp(c, d, check)) return true;
-  if (isConnectedToSourceDown(c, d, check)) return true;
-  if (isConnectedToSourceRight(c, d, check)) return true;
-  if (isConnectedToSourceLeft(c, d, check)) return true;
+  if (c->type == PIPE_SOURCE && !alreadyChecked) return true;
+  if (isConnectedToSource(c, UP, d, alreadyChecked)) return true;
+  if (isConnectedToSource(c, RIGHT, d, alreadyChecked)) return true;
+  if (isConnectedToSource(c, DOWN, d, alreadyChecked)) return true;
+  if (isConnectedToSource(c, LEFT, d, alreadyChecked)) return true;
   return false;
 }
 
-bool PipeGrid::isConnectedToSourceUp(PipeCell* c, int d, bool check) {
-  if (c->connections.up && d != UP) {
-    PipeCell* n = getCell(c, UP);
+bool PipeGrid::isConnectedToSource(PipeCell* c, int d, int from, bool alreadyChecked) {
+  if (c->hasConnection(d) && d != from) {
+    PipeCell* n = getCell(c, d);
     if (n == nullptr) return false;
-    if (n->connections.down && isConnectedToSource(n, DOWN, check))
-      return true;
-  }
-  return false;
-}
-
-bool PipeGrid::isConnectedToSourceDown(PipeCell* c, int d, bool check) {
-  if (c->connections.down && d != DOWN) {
-    PipeCell* n = getCell(c, DOWN);
-    if (n == nullptr) return false;
-    if (n->connections.up && isConnectedToSource(n, UP, check))
-      return true;
-  }
-  return false;
-}
-
-bool PipeGrid::isConnectedToSourceRight(PipeCell* c, int d, bool check) {
-  if (c->connections.right && d != RIGHT) {
-    PipeCell* n = getCell(c, RIGHT);
-    if (n == nullptr) return false;
-    if (n->connections.left && isConnectedToSource(n, LEFT, check))
-      return true;
-  }
-  return false;
-}
-
-bool PipeGrid::isConnectedToSourceLeft(PipeCell* c, int d, bool check) {
-  if (c->connections.left && d != LEFT) {
-    PipeCell* n = getCell(c, LEFT);
-    if (n == nullptr) return false;
-    if (n->connections.right && isConnectedToSource(n, RIGHT, check))
-      return true;
+    if (n->hasConnection(oppositeDirection(d)))
+      if (isConnectedToSource(n, oppositeDirection(d), alreadyChecked))
+        return true;
   }
   return false;
 }

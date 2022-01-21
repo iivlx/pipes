@@ -38,6 +38,13 @@ void PipeCell::addConnectionFrom(int d) {
   if (d == LEFT) this->connections.right = 1;
 }
 
+bool PipeCell::hasConnection(int d) {
+  if (d == UP) return this->connections.up;
+  if (d == RIGHT) return this->connections.right;
+  if (d == DOWN) return this->connections.down;
+  if (d == LEFT) return this->connections.left;
+}
+
 void PipeCell::makeType(int type, int t) {
   this->type = type;
    this->time = t;

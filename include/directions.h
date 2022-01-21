@@ -40,4 +40,5 @@ const Connections DownLeft = Connections{ 0,0,1,1 };
 const Connections Left = Connections{ 0,0,0,1 };
 
 int countConnections(Connections c);
+int oppositeDirection(int d);
 int getRandomSide(Connections c);

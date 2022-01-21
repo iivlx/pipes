@@ -33,11 +33,8 @@ class PipeGrid {
   void createPathToSource(PipeCell* c);
   bool canCreatePathToSource(PipeCell* c, int d);
   int isConnectedToSource(PipeCell* c);
-  int isConnectedToSource(PipeCell* c, int d, bool check = false);
-  bool isConnectedToSourceUp(PipeCell* c, int d, bool check);
-  bool isConnectedToSourceDown(PipeCell* c, int d, bool check);
-  bool isConnectedToSourceLeft(PipeCell* c, int d, bool check);
-  bool isConnectedToSourceRight(PipeCell* c, int d, bool check);
+  int isConnectedToSource(PipeCell* c, int d, bool alreadyChecked = false);
+  bool isConnectedToSource(PipeCell* c, int d, int from, bool alreadyChecked);
   bool doesSourceLoop();
 
  protected:

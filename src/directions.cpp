@@ -6,6 +6,13 @@ int countConnections(Connections c) {
 	return c.up + c.right + c.left + c.down;
 }
 
+int oppositeDirection(int d) {
+	if (d == UP) return DOWN;
+	if (d == RIGHT) return LEFT;
+	if (d == DOWN) return UP;
+	if (d == LEFT) return RIGHT;
+}
+
 int getRandomSide(Connections c) {
 	int cFreeSides = countConnections(c);
 	if (cFreeSides == 0) return -1; 
