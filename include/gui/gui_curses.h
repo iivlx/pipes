@@ -29,7 +29,6 @@ PipeWindow* createWindow();
 void deleteWindow();
 int getWindowHeight();
 int getWindowWidth();
-void moveCursor(PipeWindow* window, PipeGrid* g, int c);
 void setAttributes(ColorAttributes& attributes, bool source, bool sourceLoops, bool solved, bool reverse);
 void applyAttributes(ColorAttributes attributes);
 void removeAttributes(ColorAttributes& attributes);
@@ -37,7 +36,5 @@ void clearAttributes(ColorAttributes& attributes);
 string getCommand(int x, int y, int maxLength = 60, char prompt = ':');
 bool handleCommand(PipeWindow* window, PipeGrid* g);
 void handleKeyPress(PipeWindow* window, PipeGrid* g, char c);
-
-void rotateCellAtCursor(PipeWindow* window, PipeGrid* g);
 
 void gui(PipeGrid* g);

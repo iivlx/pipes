@@ -6,6 +6,7 @@
 #include "curses.h"
 
 #include "gui_curses.h"
+#include "gui_curses_commands.h"
 #include "PipeGrid.h"
 #include "PipeCell.h"
 #include "PipeWindow.h"
@@ -58,18 +59,6 @@ int getWindowWidth() {
   int windowWidth;
   getmaxyx(stdscr, windowHeight, windowWidth);
   return windowWidth;
-}
-
-void moveCursor(PipeWindow* window, PipeGrid* g, int c) {
-  if (c == 'h' && window->cursor.x > 0) window->cursor.x--;
-  if (c == 'j' && window->cursor.y < g->height - 1) window->cursor.y++;
-  if (c == 'k' && window->cursor.y > 0) window->cursor.y--;
-  if (c == 'l' && window->cursor.x < g->width - 1) window->cursor.x++;
-}
-
-void rotateCellAtCursor(PipeWindow* window, PipeGrid* g) {
-  PipeCell* c = g->getCell(window->cursor.x, window->cursor.y);
-  if (!c->solved) c->rotate();
 }
 
 void drawPipeEnd(Connections c) {
@@ -241,7 +230,6 @@ bool handleCommand(PipeWindow* window, PipeGrid* g) {
 
 void handleKeyPress(PipeWindow* window, PipeGrid* g, char c) {
   if (c == 'h' || c == 'j' || c == 'k' || c == 'l') moveCursor(window, g, c);
-
   if (c == ' ') rotateCellAtCursor(window, g);
   if (c == 't') {
     PipeCell* c = g->getCell(window->cursor.x, window->cursor.y);
@@ -255,16 +243,13 @@ void gui(PipeGrid* g) {
   PipeWindow* mainWindow = createWindow();
 
   bool quit = false;
-
   int c = 0;
   do {
-    
     if (c == ':')
       quit = handleCommand(mainWindow, g);
     else
       handleKeyPress(mainWindow, g, c);
     display(mainWindow, g);
-
     if(!quit) c = getch();
   } while (c != 'q' && quit == false);
 
