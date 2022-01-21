@@ -206,10 +206,10 @@ bool PipeGrid::isConnectedToSourceRight(PipeCell* c, int d) {
 }
 
 bool PipeGrid::isConnectedToSourceLeft(PipeCell* c, int d) {
-  if (c->connections.down && d != LEFT) {
+  if (c->connections.left && d != LEFT) {
     PipeCell* n = getCell(c, LEFT);
     if (n == nullptr) return false;
-    if (n->connections.left && isConnectedToSource(n, LEFT))
+    if (n->connections.right && isConnectedToSource(n, RIGHT))
       return true;
   }
   return false;
