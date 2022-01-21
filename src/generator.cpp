@@ -1,13 +1,10 @@
 ﻿#include "curses.h" 
 
+#include "generator.h"
 #include "PipeGrid.h"
 #include "PipeCell.h"
 #include "directions.h"
 #include "gui_curses.h"
-
-PipeGrid createPipes(int width, int height);
-
-void createSource(int width, int height, PipeGrid& grid);
 
 int main(int argc, char** argv) {
   PipeGrid grid = createPipes(10, 10);
