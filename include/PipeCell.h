@@ -18,6 +18,7 @@ public:
   int type;
   int time;
   int checked;
+  bool solved;
 
   PipeCell();
 

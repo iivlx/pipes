@@ -6,11 +6,12 @@ PipeCell::PipeCell() {
   this->connections = { 0, 0, 0, 0 };
   this->type = 0;
   this->time = 0;
+
+  this->solved = false;
 }
 
 void PipeCell::rotate() {
-  int temp;
-  temp = this->connections.up;
+  int temp = this->connections.up;
   this->connections.up = this->connections.left;
   this->connections.left = this->connections.down;
   this->connections.down = this->connections.right;
