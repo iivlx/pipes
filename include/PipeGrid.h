@@ -16,6 +16,7 @@ class PipeGrid {
   PipeCell* getCell(int x, int y);
   PipeCell* getCell(int x, int y, int d);
   PipeCell* getCell(PipeCell*, int d);
+  PipeCell* getCellSource();
   PipeCell* getCellTopLeft();
   PipeCell* getCellTopRight();
   PipeCell* getCellBottomLeft();
@@ -32,13 +33,12 @@ class PipeGrid {
   void createPathToSource(PipeCell* c);
   bool canCreatePathToSource(PipeCell* c, int d);
   int isConnectedToSource(PipeCell* c);
-  int isConnectedToSource(PipeCell* c, int d);
-  bool isConnectedToSourceUp(PipeCell* c, int d);
-  bool isConnectedToSourceDown(PipeCell* c, int d);
-  bool isConnectedToSourceLeft(PipeCell* c, int d);
-  bool isConnectedToSourceRight(PipeCell* c, int d);
+  int isConnectedToSource(PipeCell* c, int d, bool check = false);
+  bool isConnectedToSourceUp(PipeCell* c, int d, bool check);
+  bool isConnectedToSourceDown(PipeCell* c, int d, bool check);
+  bool isConnectedToSourceLeft(PipeCell* c, int d, bool check);
+  bool isConnectedToSourceRight(PipeCell* c, int d, bool check);
   bool doesSourceLoop();
-  bool doesSourceLoopCell(PipeCell* c, int d);
 
  protected:
   std::vector<PipeCell> cells;
