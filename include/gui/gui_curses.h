@@ -16,9 +16,9 @@
 using std::string;
 
 struct ColorAttributes {
-  bool bold;
-  bool reverse;
-  int color;
+  bool bold = false;
+  bool reverse = false;
+  int color = 0;
 };
 
 void initColors();
@@ -29,6 +29,11 @@ PipeWindow* createWindow();
 void deleteWindow();
 int getWindowHeight();
 int getWindowWidth();
+void drawPipe(PipeCell* c);
+void drawPipeEnd(Connections c);
+void drawPipeElbowOrStraight(Connections c);
+void drawPipeT(Connections c);
+void drawPipeConnector(Connections c);
 void setAttributes(ColorAttributes& attributes, bool source, bool sourceLoops, bool solved, bool reverse);
 void applyAttributes(ColorAttributes attributes);
 void removeAttributes(ColorAttributes& attributes);

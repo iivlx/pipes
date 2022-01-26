@@ -14,3 +14,8 @@ void rotateCellAtCursor(PipeWindow* window, PipeGrid* g) {
   PipeCell* c = g->getCell(window->cursor.x, window->cursor.y);
   if (!c->solved) c->rotate();
 }
+
+void markSolvedCellAtCursor(PipeWindow* window, PipeGrid* g) {
+  PipeCell* c = g->getCell(window->cursor.x, window->cursor.y);
+  c->solved = !c->solved;
+}

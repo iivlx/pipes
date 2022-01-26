@@ -1,6 +1,5 @@
 #include <string>
 #include <sstream>
-
 #include <iostream>
 
 #include "curses.h"
@@ -15,6 +14,12 @@
 
 using std::string;
 using std::stringstream;
+
+
+int main(int argc, char** argv) {
+  PipeGrid grid = createPipes(10, 10);
+  gui(&grid);
+}
 
 void initColors() {
   start_color();
@@ -59,6 +64,13 @@ int getWindowWidth() {
   int windowWidth;
   getmaxyx(stdscr, windowHeight, windowWidth);
   return windowWidth;
+}
+
+void drawPipe(PipeCell* c) {
+  if (c->type == PIPE_END)
+    drawPipeEnd(c->connections);
+  else if (c->type == PIPE_CONNECTOR || c->type == PIPE_SOURCE)
+    drawPipeConnector(c->connections);
 }
 
 void drawPipeEnd(Connections c) {
@@ -134,35 +146,24 @@ void clearAttributes(ColorAttributes& attributes) {
   attributes.color = 0;
 }
 
-void displayGrid(PipeWindow* window, PipeGrid* g) {
+void displayCell(PipeGrid* g, PipeCell* c, bool sourceLoops, bool reverse) {
+  bool source = g->isConnectedToSource(c);
   ColorAttributes colorAttributes;
-  clearAttributes(colorAttributes);
+  setAttributes(colorAttributes, source, sourceLoops, c->solved, reverse);
+  applyAttributes(colorAttributes);
+  drawPipe(c);
+  removeAttributes(colorAttributes);
+}
 
-  bool cursor;
-  bool source;
+void displayGrid(PipeWindow* window, PipeGrid* g) {
   bool sourceLoops = g->doesSourceLoop();
-
   for (int y = 0; y < g->height; y++) {
     for (int x = 0; x < g->width; x++) {
       move(y, x);
-
-      PipeCell* c = g->getCell(x, y);
-      cursor = (x == window->cursor.x && y == window->cursor.y);
-      source = g->isConnectedToSource(c);
-
-
-      setAttributes(colorAttributes, source, sourceLoops, c->solved, cursor);
-      applyAttributes(colorAttributes);
-
-      if (c->type == PIPE_END)
-        drawPipeEnd(c->connections);
-      else if (c->type == PIPE_CONNECTOR || c->type == PIPE_SOURCE)
-        drawPipeConnector(c->connections);
-
-      removeAttributes(colorAttributes);
+      bool reverse = (x == window->cursor.x && y == window->cursor.y);
+      displayCell(g, g->getCell(x, y), sourceLoops, reverse);
     }
   }
-  return;
 }
 
 string getCommand(int x, int y, int maxLength, char prompt) {
@@ -212,11 +213,11 @@ bool handleCommand(PipeWindow* window, PipeGrid* g) {
       ss >> width;
       ss >> height;
       *g = createPipes(width, height);
-      //cX = 1;
-      //cY = 1;
+      window->cursor.x = 1;
+      window->cursor.y = 1;
     }
     if (b == "r") {
-      //g.randomize();
+      g->randomize();
     }
     if (b == "s") {
      // solvePipes(&g);
@@ -229,12 +230,12 @@ bool handleCommand(PipeWindow* window, PipeGrid* g) {
 }
 
 void handleKeyPress(PipeWindow* window, PipeGrid* g, char c) {
+  if (c == KEY_MOUSE) {
+   // Handle mouse...
+  }
   if (c == 'h' || c == 'j' || c == 'k' || c == 'l') moveCursor(window, g, c);
   if (c == ' ') rotateCellAtCursor(window, g);
-  if (c == 't') {
-    PipeCell* c = g->getCell(window->cursor.x, window->cursor.y);
-    c->solved = !c->solved;
-  }
+  if (c == 't') markSolvedCellAtCursor(window, g);
 }
 
 void gui(PipeGrid* g) {

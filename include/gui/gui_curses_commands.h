@@ -6,3 +6,4 @@
 
 void moveCursor(PipeWindow* window, PipeGrid* g, int c);
 void rotateCellAtCursor(PipeWindow* window, PipeGrid* g);
+void markSolvedCellAtCursor(PipeWindow* window, PipeGrid* g);

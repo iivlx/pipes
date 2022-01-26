@@ -1,29 +1,22 @@
-﻿#include "curses.h" 
-
-#include "generator.h"
+﻿#include "generator.h"
 #include "PipeGrid.h"
 #include "PipeCell.h"
 #include "directions.h"
-#include "gui_curses.h"
 
-int main(int argc, char** argv) {
-  PipeGrid grid = createPipes(10, 10);
-  gui(&grid);
-
+void createEndpoint(PipeGrid& grid) {
+  grid.time += 1;
+  PipeCell* c = grid.getCellWithOneOpenDirectionToSource(); // Create these cells first.
+  if (c == nullptr)
+    c = grid.getRandomEmptyCell();
+  c->makeEndpoint(grid.time);
+  grid.createPathToSource(c);
 }
 
 PipeGrid createPipes(int width, int height) {
   PipeGrid grid = PipeGrid(width, height);
   createSource(width, height, grid);
-
-  while (grid.hasEmptyCell()) {
-    grid.time += 1;
-    PipeCell* c = grid.getCellWithOneOpenDirectionToSource(); // Create these cells first.
-    if (c == nullptr)
-      c = grid.getRandomEmptyCell();
-    c->makeEndpoint(grid.time);
-    grid.createPathToSource(c);
-  }
+  while (grid.hasEmptyCell())
+    createEndpoint(grid);
   return grid;
 }
 
