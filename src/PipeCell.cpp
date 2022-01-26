@@ -47,7 +47,7 @@ bool PipeCell::hasConnection(int d) {
 
 void PipeCell::makeType(int type, int t) {
   this->type = type;
-   this->time = t;
+  this->time = t;
 }
 
 void PipeCell::makeEndpoint(int time) {
@@ -64,39 +64,30 @@ void PipeCell::makeConnector(int time) {
 
 bool PipeCell::hasAdjacentConnections() {
   Connections c = this->connections;
-  return ((c.up && c.right) || (c.right && c.down) || (c.down && c.left) || (c.left && c.up)) ? true : false;
+  return ((c.up && c.right) || (c.right && c.down) || (c.down && c.left) || (c.left && c.up));
 }
 
 bool PipeCell::hasOppositeConnections() {
   Connections c = this->connections;
-  return ((c.up && c.down) || (c.right && c.left)) ? true : false;
+  return ((c.up && c.down) || (c.right && c.left));
 }
 
 bool PipeCell::isElbow() {
-  if (this->countConnections() == 2 && this->hasAdjacentConnections()) {
-    return true;
-  }
-  return false;
+  return (this->countConnections() == 2 && this->hasAdjacentConnections());
 }
 
 bool PipeCell::isStraight() {
-  if (this->countConnections() == 2 && this->hasOppositeConnections()) {
-    return true;
-  }
-  return false;
+  return (this->countConnections() == 2 && this->hasOppositeConnections());
 }
 
 bool PipeCell::isT() {
-  if (this->countConnections() == 3) return true;
-  return false;
+  return (this->countConnections() == 3);
 }
 
 bool PipeCell::isEnd() {
-  if (this->countConnections() == 1) return true;
-  return false;
+  return (this->countConnections() == 1);
 }
 
 bool PipeCell::isConnectorOrSource() {
-  if (this->type == PIPE_CONNECTOR || this->type == PIPE_SOURCE) return true;
-  return false;
+  return (this->type == PIPE_CONNECTOR || this->type == PIPE_SOURCE);
 }
