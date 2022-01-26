@@ -220,3 +220,12 @@ Connections PipeGrid::getEndpoints(PipeCell* c) {
   d.left = getCellType(c, LEFT) == PIPE_END;
   return d;
 }
+
+void PipeGrid::randomize() {
+  for (int i = 0; i < (this->height * this->width * this->width); i++) {
+    PipeCell* c = getRandomCell();
+    c->checked = false;
+    c->solved = false;
+    c->rotate();
+  }
+}

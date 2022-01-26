@@ -15,6 +15,7 @@ class PipeGrid {
   PipeGrid(int width, int height);
   PipeCell* getCell(int x, int y);
   PipeCell* getCell(int x, int y, int d);
+  PipeCell* getCell(Point p, int d);
   PipeCell* getCell(PipeCell*, int d);
   PipeCell* getCellSource();
   PipeCell* getCellTopLeft();
@@ -36,6 +37,7 @@ class PipeGrid {
   int isConnectedToSource(PipeCell* c, int d, bool alreadyChecked = false);
   bool isConnectedToSource(PipeCell* c, int d, int from, bool alreadyChecked);
   bool doesSourceLoop();
+  void randomize();
 
  protected:
   std::vector<PipeCell> cells;
