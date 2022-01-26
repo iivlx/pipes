@@ -19,16 +19,13 @@ PipeGrid::PipeGrid(int width, int height) {
   this->time = 0;
   this->checkTime = 0;
   this->source = Point{ 0, 0 };
-  for (int y = 0; y < height; y++) {
-    for (int x = 0; x < width; x++) {
+  for (int y = 0; y < height; y++)
+    for (int x = 0; x < width; x++)
       this->cells.push_back(PipeCell());
-    }
-  }
 }
 
 bool PipeGrid::isValidCoordinate(int x, int y) {
-  if ((x < 0 || x >= this->width) || (y < 0 || y >= this->height)) return false;
-  return true;
+  return !((x < 0 || x >= this->width) || (y < 0 || y >= this->height));
 }
 
 PipeCell* PipeGrid::getCell(int x, int y) {
@@ -47,9 +44,12 @@ PipeCell* PipeGrid::getCell(int x, int y, int d) {
   return c;
 }
 
-PipeCell* PipeGrid::getCell(PipeCell* c, int d) {
-  Point p = getCellCoordinates(c);
+PipeCell* PipeGrid::getCell(Point p, int d) {
   return getCell(p.x, p.y, d);
+}
+
+PipeCell* PipeGrid::getCell(PipeCell* c, int d) {
+  return getCell(getCellCoordinates(c), d);
 }
 
 PipeCell* PipeGrid::getCellSource() {
@@ -73,9 +73,8 @@ PipeCell* PipeGrid::getCellBottomRight() {
 }
 
 int PipeGrid::getCellType(PipeCell* c, int d) {
-  PipeCell* n = getCell(c, d);
-  if (n == nullptr) return -1;
-  return n->type;
+  if (PipeCell* n = getCell(c, d)) return n->type;
+  else return -1;
 }
 
 Point PipeGrid::getCellCoordinates(PipeCell* c) {
@@ -90,9 +89,8 @@ bool PipeGrid::hasEmptyCell() {
 }
 
 PipeCell* PipeGrid::getRandomCell() {
-  int cCells = this->width * this->height;
-  int idxRandomCell = randint(0, cCells - 1)();
-  return &this->cells[idxRandomCell];
+  int randomCell = randint(0, (this->width * this->height) - 1)();
+  return &this->cells[randomCell];
 }
 
 PipeCell* PipeGrid::getRandomEmptyCell() {
@@ -106,8 +104,7 @@ PipeCell* PipeGrid::getRandomEmptyCell() {
 
 // Check if there are any empty cells in the grid that are blocked on 3 sides.
 bool PipeGrid::hasCellWithOneOpenDirectionToSource() {
-  PipeCell* c = getCellWithOneOpenDirectionToSource();
-  return (c != nullptr) ? true : false;
+  return getCellWithOneOpenDirectionToSource() != nullptr;
 }
 
 // Get an empty cell in the grid that is blocked on 3 sides.
