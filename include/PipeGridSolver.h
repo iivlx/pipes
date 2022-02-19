@@ -15,6 +15,7 @@ public:
   bool solveElbow(PipeCell* c);
   bool solveStraight(PipeCell* c);
   bool solveT(PipeCell* c);
+  void clearCorrectFlags();
   int countPossibleConnections(PipeCell* c);
   int countCorrectConnections(PipeCell* c);
   Connections possibleConnections(Connections d);

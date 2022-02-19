@@ -11,6 +11,7 @@ PipeGridSolver::PipeGridSolver(PipeGrid* g) {
 }
 
 void PipeGridSolver::solve(){
+  clearCorrectFlags();
   removeEdgeConnections();
   removeCornerConnections();
   solveCells();
@@ -67,6 +68,9 @@ void PipeGridSolver::solveCells() {
 }
 
 bool PipeGridSolver::solveCell(PipeCell* c) {
+  if (c->correct)
+    return false;
+
   if (c->isEnd())
     return solveEnd(c);
   else if (c->isElbow())
@@ -142,6 +146,14 @@ bool PipeGridSolver::solveT(PipeCell* c) {
   return false;
 }
 
+void PipeGridSolver::clearCorrectFlags() {
+  for (int x = 0; x < this->grid->width; x++) {
+    for (int y = 0; y < this->grid->height; y++) {
+      this->grid->getCell(x, y)->correct = false;
+    }
+  }
+}
+
 int PipeGridSolver::countPossibleConnections(PipeCell* c) {
   Connections d = c->possibleConnections;
   return (d.up != 0) + (d.right != 0) + (d.down != 0) + (d.left != 0);
@@ -180,6 +192,10 @@ bool PipeGridSolver::usePossibleConnections(PipeCell* c) {
 }
 
 void PipeGridSolver::updateConnections(PipeCell* c) {
+  //Point p = grid->getCellCoordinates(c);
+
+
+
 
 }
 
