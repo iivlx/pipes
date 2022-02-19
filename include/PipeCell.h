@@ -20,6 +20,9 @@ public:
   int checked;
   bool solved;
 
+  bool correct;
+  Connections possibleConnections;
+
   PipeCell();
 
   int countConnections();

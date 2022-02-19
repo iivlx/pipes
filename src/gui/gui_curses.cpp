@@ -8,6 +8,7 @@
 #include "gui_curses_commands.h"
 #include "PipeGrid.h"
 #include "PipeCell.h"
+#include "PipeGridSolver.h"
 #include "PipeWindow.h"
 #include "pipe_characters.h"
 #include "generator.h"
@@ -220,11 +221,14 @@ bool handleCommand(PipeWindow* window, PipeGrid* g) {
       g->randomize();
     }
     if (b == "s") {
-     // solvePipes(&g);
+      PipeGridSolver* s = new PipeGridSolver(g);
+      s->solve();
+      delete s;
     }
     if (b == "q") {
       return true;
     }
+    b = "";
   }
   return false;
 }

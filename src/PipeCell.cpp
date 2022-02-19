@@ -6,8 +6,10 @@ PipeCell::PipeCell() {
   this->connections = { 0, 0, 0, 0 };
   this->type = 0;
   this->time = 0;
-
   this->solved = false;
+
+  this->possibleConnections = { -1, -1, -1, -1 };
+  this->correct = false;
 }
 
 void PipeCell::rotate() {
@@ -43,6 +45,7 @@ bool PipeCell::hasConnection(int d) {
   if (d == RIGHT) return this->connections.right;
   if (d == DOWN) return this->connections.down;
   if (d == LEFT) return this->connections.left;
+  return false;
 }
 
 void PipeCell::makeType(int type, int t) {
