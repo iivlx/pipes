@@ -233,13 +233,15 @@ bool handleCommand(PipeWindow* window, PipeGrid* g) {
   return false;
 }
 
-void handleKeyPress(PipeWindow* window, PipeGrid* g, char c) {
+bool handleKeyPress(PipeWindow* window, PipeGrid* g, char c) {
   if (c == KEY_MOUSE) {
    // Handle mouse...
   }
+  if (c == 'q') return true;
   if (c == 'h' || c == 'j' || c == 'k' || c == 'l') moveCursor(window, g, c);
   if (c == ' ') rotateCellAtCursor(window, g);
   if (c == 't') markSolvedCellAtCursor(window, g);
+  return false;
 }
 
 void gui(PipeGrid* g) {
@@ -253,10 +255,10 @@ void gui(PipeGrid* g) {
     if (c == ':')
       quit = handleCommand(mainWindow, g);
     else
-      handleKeyPress(mainWindow, g, c);
+      quit = handleKeyPress(mainWindow, g, c);
     display(mainWindow, g);
     if(!quit) c = getch();
-  } while (c != 'q' && quit == false);
+  } while (quit == false);
 
   deleteWindow(mainWindow);
 }

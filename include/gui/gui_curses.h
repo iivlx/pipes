@@ -39,7 +39,7 @@ void applyAttributes(ColorAttributes attributes);
 void removeAttributes(ColorAttributes& attributes);
 void clearAttributes(ColorAttributes& attributes);
 string getCommand(int x, int y, int maxLength = 60, char prompt = ':');
+bool handleKeyPress(PipeWindow* window, PipeGrid* g, char c);
 bool handleCommand(PipeWindow* window, PipeGrid* g);
-void handleKeyPress(PipeWindow* window, PipeGrid* g, char c);
 
 void gui(PipeGrid* g);
