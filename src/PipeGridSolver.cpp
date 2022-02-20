@@ -1,6 +1,7 @@
 #include "PipeGridSolver.h"
 #include "PipeGrid.h"
 #include "PipeCell.h"
+#include "directions.h"
 
 PipeGridSolver::PipeGridSolver() {
   grid = nullptr;
@@ -52,16 +53,16 @@ void PipeGridSolver::removeCornerConnections() {
 }
 
 void PipeGridSolver::solveCells() {
-  PipeCell* c;
   bool unchanged = false;
   bool check;
-
   while (!unchanged) {
     unchanged = true;
     for (int x = 0; x < this->grid->width; x++) {
       for (int y = 0; y < this->grid->height; y++) {
+        if (this->grid->getCell(x, y)->correct) continue;
         check = solveCell(this->grid->getCell(x, y));
-        unchanged = check ? false : true;
+        if (check)
+          unchanged = false;
       }
     }
   }
@@ -79,11 +80,23 @@ bool PipeGridSolver::solveCell(PipeCell* c) {
     return solveStraight(c);
   else if (c->isT())
     return solveT(c);
+  else
+    return false;
 }
 
 bool PipeGridSolver::solveEnd(PipeCell* c) {
   if (c->isEnd()) {
     Connections* d = &c->possibleConnections;
+
+    if (PipeCell* n = this->grid->getCell(c, UP))
+      if (n->isEnd()) removeConnections(c, Connections{ 1, 0, 0, 0 });
+    if (PipeCell* n = this->grid->getCell(c, RIGHT))
+      if (n->isEnd()) removeConnections(c, Connections{ 0, 1, 0, 0 });
+    if (PipeCell* n = this->grid->getCell(c, DOWN))
+      if (n->isEnd()) removeConnections(c, Connections{ 0, 0, 1, 0 });
+    if (PipeCell* n = this->grid->getCell(c, LEFT))
+      if (n->isEnd()) removeConnections(c, Connections{ 0, 0, 0, 1 });
+
     if (countConnections(c) == 1)
       return useConnections(c);
 
@@ -108,6 +121,13 @@ bool PipeGridSolver::solveElbow(PipeCell* c) {
     if (d->down == 1) d->up = 0;
     if (d->right == 1) d->left = 0;
     if (d->left == 1) d->right = 0;
+
+    if (d->up == 0) d->down = 1;
+    if (d->down == 0) d->up = 1;
+    if (d->right == 0) d->left = 1;
+    if (d->left == 0) d->right = 1;
+
+    updateConnections(c);
 
     if (countPossibleConnections(c) == 2)
       return usePossibleConnections(c);
@@ -138,10 +158,10 @@ bool PipeGridSolver::solveT(PipeCell* c) {
   if (c->isT()) {
     Connections* d = &c->possibleConnections;
     
-    if ((d->right == 1 && d->down == 1 && d->left == 1) || (d->up == 0)) useConnections(c, Connections{ 0, 1, 1, 1 });
-    if ((d->down == 1 && d->left == 1 && d->up == 1) || (d->right == 0)) useConnections(c, Connections{ 1, 0, 1, 1 });
-    if ((d->left == 1 && d->up == 1 && d->right == 1) || (d->down == 0)) useConnections(c, Connections{ 1, 1, 0, 1 });
-    if ((d->up == 1 && d->right == 1 && d->down == 1) || (d->left == 0)) useConnections(c, Connections{ 1, 1, 1, 0 });
+    if ((d->right == 1 && d->down == 1 && d->left == 1) || (d->up == 0)) return useConnections(c, Connections{ 0, 1, 1, 1 });
+    if ((d->down == 1 && d->left == 1 && d->up == 1) || (d->right == 0)) return useConnections(c, Connections{ 1, 0, 1, 1 });
+    if ((d->left == 1 && d->up == 1 && d->right == 1) || (d->down == 0)) return useConnections(c, Connections{ 1, 1, 0, 1 });
+    if ((d->up == 1 && d->right == 1 && d->down == 1) || (d->left == 0)) return useConnections(c, Connections{ 1, 1, 1, 0 });
   }
   return false;
 }
@@ -149,7 +169,9 @@ bool PipeGridSolver::solveT(PipeCell* c) {
 void PipeGridSolver::clearCorrectFlags() {
   for (int x = 0; x < this->grid->width; x++) {
     for (int y = 0; y < this->grid->height; y++) {
-      this->grid->getCell(x, y)->correct = false;
+      PipeCell* c = this->grid->getCell(x, y);
+      c->correct = false;
+      c->possibleConnections = Connections{ -1, -1, -1, -1 };
     }
   }
 }
@@ -168,7 +190,7 @@ Connections PipeGridSolver::possibleConnections(Connections d) {
   return Connections{ (d.up != 0), (d.right != 0), (d.down != 0), (d.left != 0) };
 }
 
-void PipeGridSolver::addConnections(PipeCell* c) {
+void PipeGridSolver::addConnections(PipeCell* c, Connections d) {
 
 }
 
@@ -192,11 +214,20 @@ bool PipeGridSolver::usePossibleConnections(PipeCell* c) {
 }
 
 void PipeGridSolver::updateConnections(PipeCell* c) {
-  //Point p = grid->getCellCoordinates(c);
+  Point p = grid->getCellCoordinates(c);
+  Connections* d = &c->possibleConnections;
 
+  if (PipeCell* n = grid->getCell(p.x, p.y - 1))
+    if (d->up >= 0) n->possibleConnections.down = d->up;
 
+  if (PipeCell* n = grid->getCell(p.x, p.y + 1))
+    if (d->down >= 0) n->possibleConnections.up = d->down;
 
+  if (PipeCell* n = grid->getCell(p.x + 1, p.y))
+    if (d->right >= 0) n->possibleConnections.left = d->right;
 
+  if (PipeCell* n = grid->getCell(p.x - 1, p.y))
+    if (d->left >= 0) n->possibleConnections.right = d->left;
 }
 
 void PipeGridSolver::removeConnections(PipeCell* c, Connections connections) {

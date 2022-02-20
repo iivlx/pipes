@@ -19,7 +19,7 @@ public:
   int countPossibleConnections(PipeCell* c);
   int countCorrectConnections(PipeCell* c);
   Connections possibleConnections(Connections d);
-  void addConnections(PipeCell* c);
+  void addConnections(PipeCell* c, Connections d);
   void removeConnections(PipeCell* c, Connections d);
   void removeEdgeConnections();
   void removeTopEdgeConnections();
