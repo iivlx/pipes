@@ -44,6 +44,10 @@ PipeCell* PipeGrid::getCell(int x, int y, int d) {
   return c;
 }
 
+PipeCell* PipeGrid::getCell(Point p) {
+  return getCell(p.x, p.y);
+}
+
 PipeCell* PipeGrid::getCell(Point p, int d) {
   return getCell(p.x, p.y, d);
 }

@@ -15,6 +15,7 @@ class PipeGrid {
   PipeGrid(int width, int height);
   PipeCell* getCell(int x, int y);
   PipeCell* getCell(int x, int y, int d);
+  PipeCell* getCell(Point p);
   PipeCell* getCell(Point p, int d);
   PipeCell* getCell(PipeCell*, int d);
   PipeCell* getCellSource();
