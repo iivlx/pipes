@@ -30,3 +30,10 @@
 *.exe
 *.out
 *.app
+
+# Visual Studio
+*.sln
+*.vcxproj*
+.vs/
+Debug/
+x64/
