@@ -35,5 +35,3 @@
 *.sln
 *.vcxproj*
 .vs/
-Debug/
-x64/
