@@ -6,6 +6,7 @@
 #include "generator.h"
 
 void createNewPuzzle(PipeWindow* window, PipeGrid* g, int width, int height) {
+  if (width < PIPEGRID_MIN_WIDTH || height < PIPEGRID_MIN_HEIGHT) return;
   *g = createPipes(width, height);
   window->cursor.x = 1;
   window->cursor.y = 1;

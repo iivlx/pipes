@@ -3,6 +3,9 @@
 #include "PipeCell.h"
 #include "directions.h"
 
+const int PIPEGRID_MIN_HEIGHT = 3;
+const int PIPEGRID_MIN_WIDTH = 3;
+
 class PipeGrid {
  public:
   int width;
