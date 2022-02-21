@@ -1,7 +1,25 @@
 #include "gui_curses_commands.h"
 #include "PipeWindow.h"
 #include "PipeGrid.h"
+#include "PipeGridSolver.h"
 #include "PipeCell.h"
+#include "generator.h"
+
+void createNewPuzzle(PipeWindow* window, PipeGrid* g, int width, int height) {
+  *g = createPipes(width, height);
+  window->cursor.x = 1;
+  window->cursor.y = 1;
+}
+
+void randomizePuzzle(PipeGrid* g) {
+  g->randomize();
+}
+
+void solvePuzzle(PipeGrid* g) {
+  PipeGridSolver* s = new PipeGridSolver(g);
+  s->solve();
+  delete s;
+}
 
 void moveCursor(PipeWindow* window, PipeGrid* g, int c) {
   if (c == 'h' && window->cursor.x > 0) window->cursor.x--;

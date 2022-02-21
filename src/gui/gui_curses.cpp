@@ -213,28 +213,19 @@ bool longCommand(PipeWindow* window, PipeGrid* g) {
 bool handleCommand(PipeWindow* window, PipeGrid* g, string command) {
   string b;
   stringstream ss(command);
-  while (ss) {
-    ss >> b;
+  while (ss >> b) {
     if (b == "c") {
       int width, height;
       ss >> width;
       ss >> height;
-      *g = createPipes(width, height);
-      window->cursor.x = 1;
-      window->cursor.y = 1;
+      createNewPuzzle(window, g, width, height);
     }
-    if (b == "r") {
-      g->randomize();
-    }
-    if (b == "s") {
-      PipeGridSolver* s = new PipeGridSolver(g);
-      s->solve();
-      delete s;
-    }
-    if (b == "q") {
+    else if (b == "r")
+      randomizePuzzle(g);
+    else if (b == "s")
+      solvePuzzle(g);
+    else if (b == "q")
       return true;
-    }
-    b = "";
   }
   return false;
 }
