@@ -16,7 +16,6 @@
 using std::string;
 using std::stringstream;
 
-
 int main(int argc, char** argv) {
   PipeGrid grid = createPipes(10, 10);
   gui(&grid);
@@ -241,21 +240,27 @@ bool handleKeyPress(PipeWindow* window, PipeGrid* g, char c) {
   return false;
 }
 
+bool handleKeys(PipeWindow* window, PipeGrid* g) {
+  bool quit = false;
+  int c = getch();
+  if (c == ':')
+    return longCommand(window, g);
+  else
+    return handleKeyPress(window, g, c);
+}
+
+void mainLoop(PipeWindow* window, PipeGrid* g) {
+  bool quit = false;
+  while (!quit) {
+    display(window, g);
+    quit = handleKeys(window, g);
+  }
+}
+
 void gui(PipeGrid* g) {
   initCurses();
   initColors();
   PipeWindow* mainWindow = createWindow();
-
-  bool quit = false;
-  int c = 0;
-  do {
-    if (c == ':')
-      quit = longCommand(mainWindow, g);
-    else
-      quit = handleKeyPress(mainWindow, g, c);
-    display(mainWindow, g);
-    if(!quit) c = getch();
-  } while (quit == false);
-
+  mainLoop(mainWindow, g);
   deleteWindow(mainWindow);
 }

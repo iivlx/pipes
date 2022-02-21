@@ -44,5 +44,6 @@ string getCommand(int x, int y, int maxLength = 60, char prompt = ':');
 bool handleKeyPress(PipeWindow* window, PipeGrid* g, char c);
 bool longCommand(PipeWindow* window, PipeGrid* g);
 bool handleCommand(PipeWindow* window, PipeGrid* g, string command);
-
+bool handleKeys(PipeWindow* window, PipeGrid* g);
+void mainLoop(PipeWindow* window, PipeGrid* g);
 void gui(PipeGrid* g);
