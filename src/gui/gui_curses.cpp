@@ -167,44 +167,50 @@ void displayGrid(PipeWindow* window, PipeGrid* g) {
   }
 }
 
+void eraseCharacter(int x, int y) {
+  mvaddch(y, x, ' ');
+  move(y, x);
+}
+
+void setCursorBlink(bool value) {
+  curs_set(value);
+}
+
 string getCommand(int x, int y, int maxLength, char prompt) {
   string command;
   int cursor = x + 1;
+  int cursor_min = cursor;
 
   mvaddch(y, x, prompt);
-  x++;
-
-  curs_set(1); // Enable cursor blink.
-  int c = getch();
-  while (c != '\n') {
+  setCursorBlink(true);
+  for (int c = getch(); c != '\n'; c = getch()) {
     // Handle specific keys first.
     if (c == '\b') {
-      if (x < cursor) break;
+      if (cursor <= cursor_min) break;
       command.pop_back();
-      x--;
-      mvaddch(y, x, ' ');
-      move(y, x);
+      eraseCharacter(--cursor, y);
     }
     else if (c == 27) {
       command.clear();
       break;
     }
     // Handle all other keys.
-    else if (x < maxLength) {
+    else if (cursor < maxLength) {
       command.push_back(c);
-      addch(c);
-      x++;
+      mvaddch(y, cursor++, c);
     }
     refresh();
-    c = getch();
   }
-  curs_set(0); // Disable cursor blink.
-
+  setCursorBlink(false);
   return command;
 }
 
-bool handleCommand(PipeWindow* window, PipeGrid* g) {
+bool longCommand(PipeWindow* window, PipeGrid* g) {
   string command = getCommand(0, getWindowHeight() - 1);
+  return handleCommand(window, g, command);
+}
+
+bool handleCommand(PipeWindow* window, PipeGrid* g, string command) {
   string b;
   stringstream ss(command);
   while (ss) {
@@ -253,7 +259,7 @@ void gui(PipeGrid* g) {
   int c = 0;
   do {
     if (c == ':')
-      quit = handleCommand(mainWindow, g);
+      quit = longCommand(mainWindow, g);
     else
       quit = handleKeyPress(mainWindow, g, c);
     display(mainWindow, g);
