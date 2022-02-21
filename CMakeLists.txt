@@ -1,7 +1,5 @@
 cmake_minimum_required (VERSION 3.20)
 
-set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /NODEFAULTLIB:LIBCMT")
-
 project(Pipes)
 
 set(SOURCE_FILES
