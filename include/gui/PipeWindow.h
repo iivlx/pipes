@@ -11,4 +11,5 @@ class PipeWindow {
   Point cursor;
   WINDOW* window;
   PipeWindow(int nlines, int ncols, int begin_y, int begin_x);
+  ~PipeWindow();
 };
