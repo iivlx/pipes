@@ -23,9 +23,6 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 )
 
 target_link_directories(${PROJECT_NAME} PUBLIC
- include/
- include/gui/
- include/pdcurses/
  lib/pdcurses
 )
 
