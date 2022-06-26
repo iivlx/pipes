@@ -1,4 +1,4 @@
-target_sources(${PROJECT_NAME} PUBLIC
+target_sources(${PROJECT_NAME}_lib PUBLIC
  directions.cpp
  PipeGrid.cpp
  PipeCell.cpp
