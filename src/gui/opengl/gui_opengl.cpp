@@ -70,13 +70,13 @@ void gui(SDL_Window* w, PipeGrid* g) {
   }
 }
 
-void drawT(GLfloat x, GLfloat y, GLfloat r) {
+void drawT(GLfloat x, GLfloat y, GLfloat r, vec3 color) {
   glPushMatrix();
   glTranslatef(x, y, 0);
   glRotatef(r, 0, 0, 1);
 
   glBegin(GL_QUADS);
-  glColor3f(1, 1, 1);
+  glColor3f(color.x, color.y, color.z);
   glVertex2f(-20, -5); // 1
   glVertex2f(20, -5);
   glVertex2f(20, 5);
@@ -91,13 +91,13 @@ void drawT(GLfloat x, GLfloat y, GLfloat r) {
 }
 
 
-void drawStraight(GLfloat x, GLfloat y, GLfloat r) {
+void drawStraight(GLfloat x, GLfloat y, GLfloat r, vec3 color) {
   glPushMatrix();
   glTranslatef(x, y, 0);
   glRotatef(r, 0, 0, 1);
 
   glBegin(GL_QUADS);
-  glColor3f(1, 1, 1);
+  glColor3f(color.x, color.y, color.z);
   glVertex2f(-20, -5);
   glVertex2f(20, -5);
   glVertex2f(20, 5);
@@ -107,13 +107,13 @@ void drawStraight(GLfloat x, GLfloat y, GLfloat r) {
   glPopMatrix();
 }
 
-void drawElbow(GLfloat x, GLfloat y, GLfloat r) {
+void drawElbow(GLfloat x, GLfloat y, GLfloat r, vec3 color) {
   glPushMatrix();
   glTranslatef(x, y, 0);
   glRotatef(r, 0, 0, 1);
 
   glBegin(GL_QUADS);
-  glColor3f(1, 1, 1);
+  glColor3f(color.x, color.y, color.z);
   glVertex2f(-5, -5); // 1
   glVertex2f(20, -5);
   glVertex2f(20, 5);
@@ -127,13 +127,13 @@ void drawElbow(GLfloat x, GLfloat y, GLfloat r) {
   glPopMatrix();
 }
 
-void drawEnd(GLfloat x, GLfloat y, GLfloat r) {
+void drawEnd(GLfloat x, GLfloat y, GLfloat r, vec3 color) {
   glPushMatrix();
   glTranslatef(x, y, 0);
   glRotatef(r, 0, 0, 1);
 
   glBegin(GL_QUADS);
-  glColor3f(1, 1, 1);
+  glColor3f(color.x, color.y, color.z);
   glVertex2f(-20, -5);
   glVertex2f(0, -5);
   glVertex2f(0, 5);
@@ -149,42 +149,48 @@ void displayCell(PipeGrid* g, int x, int y, bool sourceLoops, bool reverse) {
 
   x = 20 + x * 40;
   y = 20 + y * 40;
+  vec3 color = { 1, 1, 1};
+  if (sourceLoops)
+    color = { 1, 0, 0 };
+  else if (source)
+    color = { 0, 0, 1 };
+
 
   if (countConnections(c->connections) == 3) {
     if (!c->connections.up)
-      drawT(x, y, 0);
+      drawT(x, y, 0, color);
     else if (!c->connections.right)
-      drawT(x, y, 90);
+      drawT(x, y, 90, color);
     else if (!c->connections.down)
-      drawT(x, y, 180);
+      drawT(x, y, 180, color);
     else if (!c->connections.left)
-      drawT(x, y, 270);
+      drawT(x, y, 270, color);
   }
 
   if (countConnections(c->connections) == 2) {
   if (c->connections.up && c->connections.down)
-    drawStraight(x, y, 90);
+    drawStraight(x, y, 90, color);
   else if (c->connections.left && c->connections.right)
-    drawStraight(x, y, 0);
+    drawStraight(x, y, 0, color);
   else if (c->connections.up && c->connections.right)
-    drawElbow(x, y, 270);
+    drawElbow(x, y, 270, color);
   else if (c->connections.up && c->connections.left)
-    drawElbow(x, y, 180);
+    drawElbow(x, y, 180, color);
   else if (c->connections.left && c->connections.down)
-    drawElbow(x, y, 90);
+    drawElbow(x, y, 90, color);
   else
-    drawElbow(x, y, 0);
+    drawElbow(x, y, 0, color);
   }
 
   if (countConnections(c->connections) == 1) {
     if (c->connections.left)
-      drawEnd(x, y, 0);
+      drawEnd(x, y, 0, color);
     else if (c->connections.up)
-      drawEnd(x, y, 90);
+      drawEnd(x, y, 90, color);
     else if (c->connections.right)
-      drawEnd(x, y, 180);
+      drawEnd(x, y, 180, color);
     else if (c->connections.down)
-      drawEnd(x, y, 270);
+      drawEnd(x, y, 270, color);
   }
 }
 
