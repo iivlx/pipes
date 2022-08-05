@@ -13,6 +13,20 @@
 #include "pipe_characters.h"
 #include "generator.h"
 #include "gui_opengl.h"
+#include "gui_opengl_pipes.h"
+
+int main(int argc, char* argv[]) {
+  SDL_Window* window = init();
+
+  PipeGrid grid = createPipes(14, 14);
+
+  if (window == nullptr)
+    return 1;
+  else
+    gui(window, &grid);
+
+  return 0;
+}
 
 SDL_Window* init() {
   SDL_Init(SDL_INIT_EVERYTHING);
@@ -43,6 +57,8 @@ void gui(SDL_Window* w, PipeGrid* g) {
 
   glMatrixMode(GL_MODELVIEW);
 
+  Point cursor = { 0, 0 };
+
   SDL_Event event;
   bool quit = false;
   while (!quit) {
@@ -53,94 +69,45 @@ void gui(SDL_Window* w, PipeGrid* g) {
       quit = true;
       break;
     case SDL_KEYDOWN:
-    if (key == SDLK_q)
-      quit = true;
-    else if (key == SDLK_r)
-      g->randomize();
-    else if (key == SDLK_s) {
-      PipeGridSolver* s = new PipeGridSolver(g);
-      s->solve();
-      delete s;
-    }
+      if (key == SDLK_q)
+        quit = true;
+      else if (key == SDLK_r)
+        g->randomize();
+      else if (key == SDLK_s) {
+        PipeGridSolver* s = new PipeGridSolver(g);
+        s->solve();
+        delete s;
+      }
+      else if (key == SDLK_h) {
+        if (cursor.x > 0)
+          cursor.x--;
+      }
+      else if (key == SDLK_j) {
+        if (cursor.y < g->height-1)
+          cursor.y++;
+      }
+      else if (key == SDLK_k) {
+        if (cursor.y > 0)
+          cursor.y--;
+      }
+      else if (key == SDLK_l) {
+        if (cursor.x < g->width-1)
+          cursor.x++;
+      }
+      else if (key == SDLK_t) {
+        PipeCell* c = g->getCell(cursor.x, cursor.y);
+        c->solved = !c->solved;
+      }
+      else if (key == SDLK_SPACE) {
+        PipeCell* c = g->getCell(cursor.x, cursor.y);
+        if (!c->solved) c->rotate();
+      }
       break;
     }
     clear();
-    displayGrid(g);
+    displayGrid(g, cursor);
     SDL_GL_SwapWindow(w);
   }
-}
-
-void drawT(GLfloat x, GLfloat y, GLfloat r, vec3 color) {
-  glPushMatrix();
-  glTranslatef(x, y, 0);
-  glRotatef(r, 0, 0, 1);
-
-  glBegin(GL_QUADS);
-  glColor3f(color.x, color.y, color.z);
-  glVertex2f(-20, -5); // 1
-  glVertex2f(20, -5);
-  glVertex2f(20, 5);
-  glVertex2f(-20, 5);
-  glVertex2f(-5, 5); // 2
-  glVertex2f(5, 5);
-  glVertex2f(5, 20);
-  glVertex2f(-5, 20);
-  glEnd();
-
-  glPopMatrix();
-}
-
-
-void drawStraight(GLfloat x, GLfloat y, GLfloat r, vec3 color) {
-  glPushMatrix();
-  glTranslatef(x, y, 0);
-  glRotatef(r, 0, 0, 1);
-
-  glBegin(GL_QUADS);
-  glColor3f(color.x, color.y, color.z);
-  glVertex2f(-20, -5);
-  glVertex2f(20, -5);
-  glVertex2f(20, 5);
-  glVertex2f(-20, 5);
-  glEnd();
-
-  glPopMatrix();
-}
-
-void drawElbow(GLfloat x, GLfloat y, GLfloat r, vec3 color) {
-  glPushMatrix();
-  glTranslatef(x, y, 0);
-  glRotatef(r, 0, 0, 1);
-
-  glBegin(GL_QUADS);
-  glColor3f(color.x, color.y, color.z);
-  glVertex2f(-5, -5); // 1
-  glVertex2f(20, -5);
-  glVertex2f(20, 5);
-  glVertex2f(5, 5);
-  glVertex2f(-5, -5); // 2
-  glVertex2f(-5, 20);
-  glVertex2f(5, 20);
-  glVertex2f(5, 5);
-  glEnd();
-
-  glPopMatrix();
-}
-
-void drawEnd(GLfloat x, GLfloat y, GLfloat r, vec3 color) {
-  glPushMatrix();
-  glTranslatef(x, y, 0);
-  glRotatef(r, 0, 0, 1);
-
-  glBegin(GL_QUADS);
-  glColor3f(color.x, color.y, color.z);
-  glVertex2f(-20, -5);
-  glVertex2f(0, -5);
-  glVertex2f(0, 5);
-  glVertex2f(-20, 5);
-  glEnd();
-
-  glPopMatrix();
 }
 
 void displayCell(PipeGrid* g, int x, int y, bool sourceLoops, bool reverse) {
@@ -150,11 +117,17 @@ void displayCell(PipeGrid* g, int x, int y, bool sourceLoops, bool reverse) {
   x = 20 + x * 40;
   y = 20 + y * 40;
   vec3 color = { 1, 1, 1};
-  if (sourceLoops)
-    color = { 1, 0, 0 };
-  else if (source)
-    color = { 0, 0, 1 };
+  if (source) {
+    if (sourceLoops)
+      color = { 1, 0, 0 };
+    else
+      color = { 0, 0, 1 };
+  }
+  if (reverse)
+    color = { 0.8, 0, 0.8 };
 
+  if (c->solved)
+    drawBackground(x, y, { 0.25, 0.25, 0.25 });
 
   if (countConnections(c->connections) == 3) {
     if (!c->connections.up)
@@ -194,12 +167,12 @@ void displayCell(PipeGrid* g, int x, int y, bool sourceLoops, bool reverse) {
   }
 }
 
-void displayGrid(PipeGrid* g) {
+void displayGrid(PipeGrid* g, Point cursor) {
   bool sourceLoops = g->doesSourceLoop();
 
   for (int y = 0; y < g->height; y++) {
     for (int x = 0; x < g->width; x++) {
-      bool reverse = false;
+      bool reverse = (cursor.x == x && cursor.y == y) ? true : false;
       displayCell(g, x, y, sourceLoops, reverse);
     }
   }
@@ -208,17 +181,4 @@ void displayGrid(PipeGrid* g) {
 void clear() {
   glClearDepth(1.0);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-}
-
-int main(int argc, char* argv[]) {
-  SDL_Window* window = init();
-
-  PipeGrid grid = createPipes(10, 10);
-
-  if (window == nullptr)
-    return 1;
-  else
-    gui(window, &grid);
-
-  return 0;
 }
