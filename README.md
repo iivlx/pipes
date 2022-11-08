@@ -1,2 +1,3 @@
-# pipes
-Pipe puzzles.
+# Pipes
+
+![Pipes](assets/github/banner.png)
